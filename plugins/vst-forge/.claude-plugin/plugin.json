@@ -1,0 +1,10 @@
+{
+  "name": "vst-forge",
+  "version": "1.0.0",
+  "description": "Vibe-code VST3/AU audio plugins with Claude: idea interview, verified JUCE starter template, DSP recipes, plain-language knob naming, tests, pluginval 10, packaging and licensing.",
+  "author": {
+    "name": "vst-forge contributors"
+  },
+  "license": "MIT",
+  "keywords": ["vst", "vst3", "audio-plugin", "juce", "dsp", "au", "music"]
+}

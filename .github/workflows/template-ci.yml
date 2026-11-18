@@ -1,0 +1,69 @@
+name: template-ci
+
+# Builds the starter template on Windows, macOS and Linux, runs both test
+# batteries and pluginval at strictness 10. Also runs the repo hygiene checks.
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  hygiene:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Scrub check
+        run: python scripts/scrub_check.py
+      - name: Label check on the template
+        run: python plugins/vst-forge/skills/vst-forge/tools/check_labels.py plugins/vst-forge/skills/vst-forge/templates/juce-starter/Source/PluginProcessor.cpp
+      - name: new_plugin.py renames cleanly
+        run: |
+          python plugins/vst-forge/skills/vst-forge/tools/new_plugin.py /tmp/Smoke --name Smoke --company "CI" --manufacturer Cico --code Smok
+          ! grep -r "ToneDrive" /tmp/Smoke
+
+  build:
+    needs: hygiene
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-24.04]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Scaffold a plugin from the template
+        shell: bash
+        run: python plugins/vst-forge/skills/vst-forge/tools/new_plugin.py "$RUNNER_TEMP/CiPlug" --name CiPlug --company "CI" --manufacturer Cico --code Cipl
+      - name: Linux dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ninja-build libasound2-dev libjack-jackd2-dev ladspa-sdk \
+            libcurl4-openssl-dev libfreetype-dev libfontconfig1-dev libx11-dev libxcomposite-dev \
+            libxcursor-dev libxext-dev libxinerama-dev libxrandr-dev libxrender-dev \
+            libglu1-mesa-dev mesa-common-dev xvfb
+      - name: macOS dependencies
+        if: runner.os == 'macOS'
+        run: brew install ninja
+      - name: Build, test, pluginval (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: powershell -ExecutionPolicy Bypass -File "$env:RUNNER_TEMP\CiPlug\scripts\build.ps1"
+      - name: Build, test, pluginval (macOS)
+        if: runner.os == 'macOS'
+        run: bash "$RUNNER_TEMP/CiPlug/scripts/build.sh"
+      - name: Build, test, pluginval (Linux)
+        if: runner.os == 'Linux'
+        run: xvfb-run -a bash "$RUNNER_TEMP/CiPlug/scripts/build.sh"
+      - name: Upload plugin
+        uses: actions/upload-artifact@v4
+        with:
+          name: CiPlug-${{ matrix.os }}
+          path: ${{ runner.temp }}/CiPlug/build/CiPlug_artefacts/**/VST3/
+          if-no-files-found: warn

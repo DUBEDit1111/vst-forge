@@ -1,0 +1,16 @@
+{
+  "name": "vst-forge",
+  "owner": {
+    "name": "vst-forge contributors"
+  },
+  "metadata": {
+    "description": "Claude Code skill for vibe-coding VST3/AU audio plugins with JUCE."
+  },
+  "plugins": [
+    {
+      "name": "vst-forge",
+      "source": "./plugins/vst-forge",
+      "description": "Vibe-code VST3/AU audio plugins with Claude: idea interview, verified JUCE starter template, DSP recipes, plain-language knob naming, tests, pluginval 10, packaging and licensing."
+    }
+  ]
+}
