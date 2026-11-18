@@ -6,7 +6,7 @@ It packages a workflow that has shipped many VST3 plugins into one installable s
 
 ## What you get
 
-- **A workflow**: idea interview â†’ one-page plugin card â†’ prove â†’ build â†’ gate â†’ report â†’ release.
+- **A workflow**: idea interview → one-page plugin card → prove → build → gate → report → release.
 - **A verified starter template** (`ToneDrive`: tone, drive, output): VST3 + Standalone on Windows/macOS/Linux, AU on macOS, header-only DSP engine, click-free crossfaded bypass, versioned state, resizable custom editor, two test batteries, and build scripts that download pluginval and run it on three seeds.
 - **References**: setup per OS, JUCE/VST3 rules and build-error fixes, a DSP algorithm cheat sheet, knob-naming rules with a label checker, testing method, measured lessons, release/signing/notarization checklist, licensing.
 - **Tools**: `new_plugin.py` (copy + rename the template, set plugin codes, `--synth` for instruments) and `check_labels.py` (catches jargon, code names and invented abbreviations on knobs).
