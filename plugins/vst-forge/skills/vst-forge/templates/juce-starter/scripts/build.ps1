@@ -28,9 +28,12 @@ if (-not (Test-Path build\CMakeCache.txt)) {
     $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
     if (-not (Test-Path $vswhere)) { throw "vswhere.exe not found. Install Visual Studio (2022 or newer) with the 'Desktop development with C++' workload." }
     $vsVer = & $vswhere -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationVersion
-    $vsYear = & $vswhere -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property catalog_productLineVersion
     if (-not $vsVer) { throw "No Visual Studio with C++ tools found. Add the 'Desktop development with C++' workload." }
-    $gen = "Visual Studio $($vsVer.Split('.')[0]) $vsYear"
+    $major = $vsVer.Split('.')[0]
+    # Take the exact generator name from CMake's own list (VS 2026 reports product line "18", not a year).
+    $m = (& $cmake --help) | Select-String -Pattern "Visual Studio $major \d{4}" | Select-Object -First 1
+    if (-not $m) { throw "This CMake does not know Visual Studio $major. Update CMake (winget upgrade Kitware.CMake)." }
+    $gen = $m.Matches[0].Value
     Write-Host "Generator: $gen"
     $cfg = @("-S", ".", "-B", "build", "-G", $gen, "-A", "x64")
     if ($Juce) { $cfg += "-DFETCHCONTENT_SOURCE_DIR_JUCE=$Juce" }
