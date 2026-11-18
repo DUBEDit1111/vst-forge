@@ -15,7 +15,7 @@ Starter: `templates/juce-starter/` (create a copy with `tools/new_plugin.py`). I
 The scripts do this for you. By hand:
 
 ```
-cmake -S . -B build -G "Visual Studio 17 2022" -A x64          # Windows
+cmake -S . -B build -G "Visual Studio 17 2022" -A x64          # Windows (VS 2026: "Visual Studio 18 2026")
 cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release         # macOS / Linux
 cmake --build build --config Release --target EngineTests ProcessorTests <Name>_VST3
 ```

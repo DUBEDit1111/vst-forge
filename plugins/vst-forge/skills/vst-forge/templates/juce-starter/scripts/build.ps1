@@ -15,7 +15,7 @@ $name = (Select-String -Path CMakeLists.txt -Pattern '^juce_add_plugin\((\w+)').
 $cmake = (Get-Command cmake -ErrorAction SilentlyContinue).Source
 if (-not $cmake) {
     $vsCmake = Get-ChildItem "C:\Program Files*\Microsoft Visual Studio\*\*\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -ErrorAction SilentlyContinue | Select-Object -First 1
-    if ($vsCmake) { $cmake = $vsCmake.FullName } else { throw "CMake not found. Install it (winget install Kitware.CMake) or Visual Studio 2022 with the C++ workload." }
+    if ($vsCmake) { $cmake = $vsCmake.FullName } else { throw "CMake not found. Install it (winget install Kitware.CMake) or Visual Studio (2022 or newer) with the C++ workload." }
 }
 
 function Run($exe, [string[]]$a) {
@@ -24,7 +24,15 @@ function Run($exe, [string[]]$a) {
 }
 
 if (-not (Test-Path build\CMakeCache.txt)) {
-    $cfg = @("-S", ".", "-B", "build", "-G", "Visual Studio 17 2022", "-A", "x64")
+    # Use the newest Visual Studio with C++ tools (2022 = 17, 2026 = 18, ...), not a hard-coded one.
+    $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+    if (-not (Test-Path $vswhere)) { throw "vswhere.exe not found. Install Visual Studio (2022 or newer) with the 'Desktop development with C++' workload." }
+    $vsVer = & $vswhere -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationVersion
+    $vsYear = & $vswhere -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property catalog_productLineVersion
+    if (-not $vsVer) { throw "No Visual Studio with C++ tools found. Add the 'Desktop development with C++' workload." }
+    $gen = "Visual Studio $($vsVer.Split('.')[0]) $vsYear"
+    Write-Host "Generator: $gen"
+    $cfg = @("-S", ".", "-B", "build", "-G", $gen, "-A", "x64")
     if ($Juce) { $cfg += "-DFETCHCONTENT_SOURCE_DIR_JUCE=$Juce" }
     Run $cmake $cfg
 }

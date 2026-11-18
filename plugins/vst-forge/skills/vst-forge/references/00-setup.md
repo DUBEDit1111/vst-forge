@@ -13,7 +13,7 @@ Do this once per machine. Then build the untouched starter template before writi
 
 ## Windows 10/11
 
-1. Install **Visual Studio 2022** (Community is free) or **Build Tools for Visual Studio 2022** with the *Desktop development with C++* workload. It includes a CMake you can use.
+1. Install **Visual Studio 2022 or newer** (Community is free) or the matching **Build Tools for Visual Studio** with the *Desktop development with C++* workload. It includes a CMake you can use.
 2. Install Git: `winget install Git.Git`. Optional standalone CMake: `winget install Kitware.CMake`.
 3. Build: `powershell -ExecutionPolicy Bypass -File scripts\build.ps1`
 
@@ -40,7 +40,7 @@ sudo apt update
 sudo apt install build-essential cmake ninja-build git pkg-config \
   libasound2-dev libjack-jackd2-dev ladspa-sdk libcurl4-openssl-dev \
   libfreetype-dev libfontconfig1-dev libx11-dev libxcomposite-dev \
-  libxcursor-dev libxext-dev libxinerama-dev libxrandr-dev libxrender-dev \
+  libxcursor-dev libxext-dev libxi-dev libxinerama-dev libxrandr-dev libxrender-dev \
   libglu1-mesa-dev mesa-common-dev xvfb
 ./scripts/build.sh
 ```

@@ -24,7 +24,7 @@ It packages a workflow that has shipped many VST3 plugins into one installable s
 
 ## Quick start
 
-1. Install the toolchain for your OS: see [00-setup.md](plugins/vst-forge/skills/vst-forge/references/00-setup.md) (Visual Studio 2022 Build Tools on Windows, Xcode Command Line Tools + CMake on macOS, build-essential + JUCE's dev packages on Linux).
+1. Install the toolchain for your OS: see [00-setup.md](plugins/vst-forge/skills/vst-forge/references/00-setup.md) (Visual Studio 2022 or newer Build Tools on Windows, Xcode Command Line Tools + CMake on macOS, build-essential + JUCE's dev packages on Linux).
 2. Open Claude Code in an empty folder and say something like:
 
    > Make me a VST3 tape-echo plugin: warm, a bit wobbly, with a mix knob. Use the vst-forge skill.

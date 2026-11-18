@@ -25,7 +25,7 @@ def windows_compile(src: Path, exe: Path) -> subprocess.CompletedProcess:
     vswhere = Path(os.environ.get("ProgramFiles(x86)", r"C:\Program Files (x86)")) / \
         "Microsoft Visual Studio" / "Installer" / "vswhere.exe"
     if not vswhere.exists():
-        sys.exit("error: vswhere.exe not found; install Visual Studio 2022 with C++ tools")
+        sys.exit("error: vswhere.exe not found; install Visual Studio (2022 or newer) with C++ tools")
     vs = subprocess.run([str(vswhere), "-latest", "-products", "*", "-requires",
                          "Microsoft.VisualStudio.Component.VC.Tools.x86.x64", "-property", "installationPath"],
                         capture_output=True, text=True).stdout.strip()
